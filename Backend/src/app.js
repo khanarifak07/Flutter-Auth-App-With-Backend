@@ -32,4 +32,8 @@ app.use(cookieParser());
 //configration for asset via express e.g pdf, jpg, png
 app.use(express.static("public"));
 
+//import routes
+import userRouter from "./routes/user.routes.js";
+app.use("/api/v1/users", userRouter);
+
 export { app };
