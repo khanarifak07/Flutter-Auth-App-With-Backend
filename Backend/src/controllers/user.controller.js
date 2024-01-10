@@ -126,4 +126,32 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { loginUser, registerUser };
+const logoutUser = asyncHandler(async (req, res) => {
+  //only logged in user can logout so for that I need to verify user by accesstoken from cookies
+
+  await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $unset: {
+        refreshToken: 1,
+      }, //this removes the refresh token field
+    },
+    {
+      new: true,
+    }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  //send the response and clear the cookies
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out successfully"));
+});
+
+export { loginUser, logoutUser, registerUser };
