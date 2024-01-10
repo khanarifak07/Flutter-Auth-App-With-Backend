@@ -1,0 +1,2 @@
+Flutter - Frontend
+Javascript - Backend
