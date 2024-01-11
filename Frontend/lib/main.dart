@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/change_password.dart';
 import 'package:frontend/login.dart';
 import 'package:frontend/profile.dart';
 import 'package:frontend/register.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         "/login": (context) => const Login(),
         "/register": (context) => const Register(),
         "/profile": (context) => const Profile(),
+        "/change-password": (context) => const ChangePassword()
       },
       home: accessToken != null ? const Profile() : const Login(),
     );

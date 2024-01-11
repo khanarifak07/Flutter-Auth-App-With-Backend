@@ -63,8 +63,9 @@ class _RegisterState extends State<Register> {
         "password": password,
         "fullname": fullname,
         "avatar": await MultipartFile.fromFile(avatar.path, filename: "avatar"),
-        "coverImage": await MultipartFile.fromFile(coverImage!.path,
-            filename: "coverImage")
+        if (coverImage != null)
+          "coverImage": await MultipartFile.fromFile(coverImage.path,
+              filename: "coverImage")
       });
       //make dio post request
       Response response = await dio.post(register, data: formData);

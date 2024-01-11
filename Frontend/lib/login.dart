@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Future<void> getCurrentUser(String accessToken) async {
+  Future<String?> getCurrentUser(String accessToken) async {
     try {
       //dio isntace
       Dio dio = Dio();
@@ -59,6 +59,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       print("Error while getting current user");
     }
+    return null;
   }
 
   Future<String?> loginUser({
