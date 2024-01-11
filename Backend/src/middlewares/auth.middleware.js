@@ -19,20 +19,22 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
       new ApiError(400, "Unauthorized Access");
     }
     //2.now we need to verify token from jwt and decode token via ACCESS_TOKEN
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN);
+    const decodedToken =  jwt.verify(token, process.env.ACCESS_TOKEN);
 
     //3. we can get the user id from decodedToken
-    const user = User.findById(decodedToken?._id);
+    const user = await User.findById(decodedToken?._id).select(
+      "-password -refreshToken"
+    );
 
     if (!user) {
       throw new ApiError(400, "Invalid Access Token");
     }
-    //we can inject user to req.user
-    req.user = user;
+    //we are injecting user to req.user
+     req.user = user;
     next();
   } catch (error) {
     throw new ApiError(410, error?.message || "Invalid Access Token");
   }
 });
 
-export {verifyJWT}
+export { verifyJWT };

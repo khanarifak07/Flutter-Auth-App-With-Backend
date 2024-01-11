@@ -27,10 +27,19 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const avatarLocalPath = req.files?.avatar[0]?.path; //req/files for multiple (from multer)
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
   let coverImageLocalPath;
-  if (req.files.coveImage && req.files.coveImage.length > 0) {
-    coverImageLocalPath = req.files.coveImage[0].path;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
   }
+  /* let coverImageLocalPath;
+  if (req.files && req.files.coveImage.length > 0) {
+    coverImageLocalPath = req.files.coveImage[0].path;
+  }  */
 
   const avatar = await UploadFileOnCloudinary(avatarLocalPath);
   const coverImage = await UploadFileOnCloudinary(coverImageLocalPath);
@@ -154,4 +163,11 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
 
-export { loginUser, logoutUser, registerUser };
+const getCurrentUser = asyncHandler(async (req, res) => {
+  console.log(req.user);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "Current User Fetched Successfully"));
+});
+
+export { getCurrentUser, loginUser, logoutUser, registerUser };
