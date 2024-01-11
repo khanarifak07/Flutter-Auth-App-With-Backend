@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config.dart';
 import 'package:frontend/profile.model.dart';
+import 'package:frontend/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -151,6 +152,25 @@ class _LoginState extends State<Login> {
               child: isLoading
                   ? const CircularProgressIndicator()
                   : const Text("Login"),
+            ),
+            const Spacer(),
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Register()));
+              },
+              child: RichText(
+                text: TextSpan(
+                    text: "Don't have an account ? \t",
+                    style: const TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                          text: "Register here",
+                          style: TextStyle(
+                            color: Colors.red.shade400,
+                          ))
+                    ]),
+              ),
             )
           ],
         ),
