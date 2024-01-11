@@ -170,4 +170,86 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "Current User Fetched Successfully"));
 });
 
-export { getCurrentUser, loginUser, logoutUser, registerUser };
+const updateAccountDetails = asyncHandler(async (req, res) => {
+  try {
+    const { username, email, fullname } = req.body;
+    const updateFields = {
+      username,
+      email,
+      fullname,
+    };
+    //avatar check
+    if (
+      req.files &&
+      Array.isArray(req.files?.avatar) &&
+      req.files?.avatar.length > 0
+    ) {
+      const avatarLocalPath = req.files.avatar[0].path;
+      const avatar = await UploadFileOnCloudinary(avatarLocalPath);
+      updateFields.avatar = avatar.url || avatar;
+    }
+    //coverImage check
+    if (
+      req.files &&
+      Array.isArray(req.files?.coverImage) &&
+      req.files.coverImage.length > 0
+    ) {
+      const coverImageLocalPath = req.files.coverImage[0].path;
+      const coverImage = await UploadFileOnCloudinary(coverImageLocalPath);
+      updateFields.coverImage = coverImage.url || coverImage;
+    }
+    //update in the data
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set: updateFields,
+      },
+      {
+        new: true,
+      }
+    );
+
+    //return response
+    return res
+      .status(200)
+      .json(new ApiResponse(200, user, "User details updated successfully"));
+  } catch (error) {
+    throw new ApiError(400, "Error while updating user details");
+  }
+});
+
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+
+  if (!(newPassword == confirmPassword)) {
+    throw new ApiError(400, "New password and Confirm Password does not match");
+  }
+  //get the user
+  const user = await User.findById(req.user?._id);
+
+  if (!user) {
+    throw new ApiError(401, "User not found");
+  }
+  //check the old password
+  const isPasswordMatch = await user.isPasswordCorrect(oldPassword);
+  console.log("Old Password Matched:", isPasswordMatch);
+  if (!isPasswordMatch) {
+    throw new ApiError(400, "Invalid Old Password");
+  }
+  //then we can set new password from user  (req.user = user(auth middleware))
+  user.password = newPassword;
+  // Save the updated user to MongoDB
+  await user.save({ validateBeforeSave: false });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password Changed Succssfully"));
+});
+
+export {
+  changeCurrentPassword,
+  getCurrentUser,
+  loginUser,
+  logoutUser,
+  registerUser,
+  updateAccountDetails,
+};
