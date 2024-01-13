@@ -207,7 +207,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
       {
         new: true,
       }
-    );
+    ).select("-password -refreshToken");
 
     //return response
     return res
