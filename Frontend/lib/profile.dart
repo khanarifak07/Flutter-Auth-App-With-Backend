@@ -156,6 +156,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('My profile'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -289,6 +290,14 @@ class _ProfileState extends State<Profile> {
                               avatar: avatar,
                               coverImage: coverImage,
                             );
+
+                            setState(() {
+                              fieldEditing = false;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        "Profile details updated successfully")));
                           },
                     child: isLoading
                         ? const CircularProgressIndicator()

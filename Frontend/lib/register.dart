@@ -91,6 +91,7 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           backgroundColor: Colors.red.shade200,
           title: const Text("User Registeration")),
@@ -103,6 +104,7 @@ class _RegisterState extends State<Register> {
                 await pickAvatar();
               },
               child: CircleAvatar(
+                backgroundColor: Colors.red.shade50,
                 radius: 50,
                 backgroundImage: avatar != null
                     ? MemoryImage(avatar!.readAsBytesSync())
@@ -110,6 +112,7 @@ class _RegisterState extends State<Register> {
                 child: avatar == null ? const Icon(Icons.add) : null,
               ),
             ),
+            const Text("Avatar"),
             const SizedBox(height: 16),
             GestureDetector(
               onTap: () async {
@@ -117,7 +120,7 @@ class _RegisterState extends State<Register> {
               },
               child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.red.shade100,
+                      color: Colors.red.shade50,
                       borderRadius: BorderRadius.circular(10)),
                   height: 100,
                   width: double.maxFinite,
@@ -131,6 +134,7 @@ class _RegisterState extends State<Register> {
                         )
                       : const Icon(Icons.add)),
             ),
+            const Text("Cover Image"),
             const SizedBox(height: 16),
             TextField(
               controller: usernameCtrl,

@@ -101,6 +101,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                   newPassword: newPassword.text,
                   confirmPassword: confirmPassword.text,
                 );
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Password Changed successfully")));
+                oldPassword.clear();
+                newPassword.clear();
+                confirmPassword.clear();
               },
               child: isLoading
                   ? const CircularProgressIndicator()
