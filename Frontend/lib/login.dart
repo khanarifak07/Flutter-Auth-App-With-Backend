@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config.dart';
-import 'package:frontend/profile.model.dart';
-import 'package:frontend/register.dart';
+import 'package:frontend/models/profile.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -50,7 +49,6 @@ class _LoginState extends State<Login> {
       if (response.statusCode == 200) {
         print("Current user get successfully ${response.data}");
         //store the user data in shared preference
-        SharedPreferences prefs = await SharedPreferences.getInstance();
         final user = ProfileModel.fromMap(response.data['data']);
         storeUserDataInSharedPreference(user);
       } else {
@@ -93,7 +91,7 @@ class _LoginState extends State<Login> {
           await getCurrentUser(accessToken);
 
           Navigator.pushNamedAndRemoveUntil(
-              context, "/profile", (route) => false);
+              context, "/dashboard", (route) => false);
           return accessToken;
         } else {
           print("Acess token is not availabel in the response");
@@ -154,8 +152,8 @@ class _LoginState extends State<Login> {
                   ? const CircularProgressIndicator()
                   : const Text("Login"),
             ),
-            const Spacer(),
-            InkWell(
+            // const Spacer(),
+            /* InkWell(
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const Register()));
@@ -172,7 +170,7 @@ class _LoginState extends State<Login> {
                           ))
                     ]),
               ),
-            )
+            ) */
           ],
         ),
       ),

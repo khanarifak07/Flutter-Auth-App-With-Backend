@@ -75,7 +75,8 @@ class _RegisterState extends State<Register> {
         print("User registered successfully ${response.data}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text("User registered successfully, ${response.data}")));
-        Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+            context, "/todo-list", (route) => false);
       } else {
         print("User registration failed ${response.statusCode}");
       }

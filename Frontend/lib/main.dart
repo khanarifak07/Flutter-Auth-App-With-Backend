@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/change_password.dart';
+import 'package:frontend/create_todo.dart';
+import 'package:frontend/dashboard.dart';
 import 'package:frontend/login.dart';
 import 'package:frontend/profile.dart';
 import 'package:frontend/register.dart';
+import 'package:frontend/todo_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -29,9 +32,12 @@ class MyApp extends StatelessWidget {
         "/login": (context) => const Login(),
         "/register": (context) => const Register(),
         "/profile": (context) => const Profile(),
-        "/change-password": (context) => const ChangePassword()
+        "/change-password": (context) => const ChangePassword(),
+        "/todo-list": (context) => const TodoList(),
+        "/create-todo": (context) => const CreateTodo(),
+        "/dashboard": (context) => const Dashboard()
       },
-      home: accessToken != null ? const Profile() : const Login(),
+      home: accessToken != null ? const Dashboard() : const Login(),
     );
   }
 }
