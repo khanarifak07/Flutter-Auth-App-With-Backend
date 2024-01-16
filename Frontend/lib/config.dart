@@ -13,5 +13,7 @@ const updateProfileDetailsApi = "$url/users/update-account-details";
 const changeCurrentPassword = "$url/users/change-current-password";
 //todo
 const createTodoApi = "$url/todos/create-todo";
-String updateTodoApi(String id, ) => "$url/todos/update-todo/$id";
+String updateTodoApi(String id) => "$url/todos/update-todo/$id";
+String deleteTodoApi(String id) => "$url/todos/delete-todo/$id";
+
 const getTodoApi = "$url/todos/get-todos";

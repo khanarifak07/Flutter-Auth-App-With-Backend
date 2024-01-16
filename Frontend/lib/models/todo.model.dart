@@ -47,7 +47,6 @@ class TodoModel {
     );
   }
 
-
   String toJson() => json.encode(toMap());
 
   factory TodoModel.fromJson(String source) =>

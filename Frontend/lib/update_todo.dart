@@ -43,7 +43,9 @@ class _UpdateTodoState extends State<UpdateTodo> {
         'description': description,
       };
       //make dio patch request
-      Response response = await dio.patch(updateTodoApi(id));
+      Response response = await dio.patch(updateTodoApi(id),
+          data: updateTodo,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
       //handle the response
       if (response.statusCode == 200) {
         log("Todo Updated Successfully ${response.data}");

@@ -48,6 +48,31 @@ class _DashboardState extends State<Dashboard> {
     return null;
   }
 
+  Future<void> deleteTodo({
+    required id,
+  }) async {
+    try {
+      //get the access token
+      var pref = await SharedPreferences.getInstance();
+      var token = pref.getString('accessToken');
+      //create dio instace
+      Dio dio = Dio();
+      //make dio delete request
+      Response response = await dio.delete(deleteTodoApi(id),
+          options: Options(
+            headers: {"Authorization": "Bearer $token"},
+          ));
+      //handle the response
+      if (response.statusCode == 200) {
+        print("todo deleed successfully ${response.data}");
+      } else {
+        print("error while deleting todo ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error while deleting todo $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,20 +103,41 @@ class _DashboardState extends State<Dashboard> {
               if (snapshot.data!.isEmpty) {
                 return const Center(child: Text("No todos found"));
               } else {
-                return ListView(
-                  children: snapshot.data!
-                      .map((e) => ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          UpdateTodo(todoModel: e)));
-                            },
-                            title: Text(e.title),
-                            subtitle: Text(e.description ?? ""),
-                          ))
-                      .toList(),
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ListView(
+                    children: snapshot.data!
+                        .map((e) => Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                tileColor: Colors.red.shade50,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              UpdateTodo(todoModel: e)));
+                                },
+                                title: Text(e.title),
+                                subtitle: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(e.description ?? ""),
+                                    IconButton(
+                                        onPressed: () async {
+                                          deleteTodo(id: e.id);
+                                          setState(() {});
+                                        },
+                                        icon: const Icon(Icons.delete))
+                                  ],
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
                 );
               }
             } else {
