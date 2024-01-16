@@ -6,7 +6,7 @@ const app = express();
 //cors (cross origin resource sharing) configuration as middleware
 app.use(
   cors({
-    origin: process.env.CORS,
+    origin: "*",
     credentials: true,
   })
 );
@@ -33,7 +33,10 @@ app.use(cookieParser());
 app.use(express.static("public"));
 
 //import routes
+import todoRouter from "./routes/todo.routes.js";
 import userRouter from "./routes/user.routes.js";
+//routes
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/todos", todoRouter);
 
 export { app };
