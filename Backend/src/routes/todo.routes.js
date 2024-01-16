@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createTodo,
+  deleteTodo,
   getTodos,
   updateTodo,
 } from "../controllers/todo.controller.js";
@@ -14,9 +15,9 @@ router.route("/get-todos").get(verifyJWT, getTodos);
   .route("/update-todo/users/:userId/todos/:todoId")
   .patch(verifyJWT, updateTodo);
    */
-router
-  .route("/update-todo/:todoId")
-  .patch(verifyJWT, updateTodo);
+router.route("/update-todo/:todoId").patch(verifyJWT, updateTodo);
+
+router.route("/delete-todo/:todoId").delete(verifyJWT, deleteTodo);
 
 export default router; //I can import it by name as per my choice
 // export {router} // here I need to user the same name while importing this router

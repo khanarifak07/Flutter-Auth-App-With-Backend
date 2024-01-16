@@ -73,4 +73,24 @@ const getTodos = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, todo, "All todos fetched successfully"));
 });
 
-export { createTodo, getTodos, updateTodo };
+const deleteTodo = asyncHandler(async (req, res) => {
+  // const userId = await User.findById(req.user._id);
+  const todoId = req.params.todoId;
+
+  if (!todoId) {
+    throw new ApiError(400, "Todo not found with this id");
+  }
+
+  const todo = await Todo.findOne({ _id: todoId , createdBy: req.user._id });
+  if (!todo) {
+    throw new ApiError(400, "Todo not found to delete for this specified user");
+  }
+
+  await Todo.deleteOne({ _id: todoId });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Todo deleted successfully"));
+});
+
+export { createTodo, deleteTodo, getTodos, updateTodo };

@@ -18,7 +18,7 @@ const todoSchema = new Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 export const Todo = mongoose.model("Todo", todoSchema);
