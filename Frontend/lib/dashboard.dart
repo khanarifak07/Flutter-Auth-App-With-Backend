@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config.dart';
 import 'package:frontend/models/todo.model.dart';
+import 'package:frontend/update_todo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
@@ -80,6 +81,13 @@ class _DashboardState extends State<Dashboard> {
                 return ListView(
                   children: snapshot.data!
                       .map((e) => ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          UpdateTodo(todoModel: e)));
+                            },
                             title: Text(e.title),
                             subtitle: Text(e.description ?? ""),
                           ))

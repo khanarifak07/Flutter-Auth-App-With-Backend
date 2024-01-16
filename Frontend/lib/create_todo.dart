@@ -54,8 +54,11 @@ class _CreateTodoState extends State<CreateTodo> {
     }
   }
 
-  Future<void> updateTodo(
-      {required String title, String? description, required String id}) async {
+  Future<void> updateTodo({
+    required String title,
+    String? description,
+    required String id,
+  }) async {
     try {
       setState(() {
         isLoading = true;
@@ -79,12 +82,12 @@ class _CreateTodoState extends State<CreateTodo> {
         ),
       );
       if (response.statusCode == 200) {
-        print("Todo created successfully ${response.data}");
+        print("Todo updated successfully ${response.data}");
       } else {
-        print("Todo creation failed with status code ${response.statusCode}");
+        print("Todo updation failed with status code ${response.statusCode}");
       }
     } catch (e) {
-      print("Error while creating todo: $e");
+      print("Error while updating todo: $e");
     } finally {
       setState(() {
         isLoading = false;
