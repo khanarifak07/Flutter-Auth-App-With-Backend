@@ -29,7 +29,7 @@ const createTodo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, todo, "Todo created successfully"));
 });
 
-const updateTodo = async (req, res) => {
+const updateTodo = asyncHandler(async (req, res) => {
   try {
     // const userId = req.params.userId;
     const todoId = req.params.todoId;
@@ -59,7 +59,7 @@ const updateTodo = async (req, res) => {
     console.error("Error updating todo:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-};
+});
 
 const getTodos = asyncHandler(async (req, res) => {
   //get the user
@@ -81,7 +81,7 @@ const deleteTodo = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Todo not found with this id");
   }
 
-  const todo = await Todo.findOne({ _id: todoId , createdBy: req.user._id });
+  const todo = await Todo.findOne({ _id: todoId, createdBy: req.user._id });
   if (!todo) {
     throw new ApiError(400, "Todo not found to delete for this specified user");
   }
@@ -93,4 +93,28 @@ const deleteTodo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Todo deleted successfully"));
 });
 
-export { createTodo, deleteTodo, getTodos, updateTodo };
+const toggleCompleteStatus = asyncHandler(async (req, res) => {
+  const { todoId } = req.params;
+  //get todo by id
+  const todo = await Todo.findById(todoId);
+  //check and change the toggle
+  if (todo.complete) {
+    todo.complete = false;
+  } else {
+    todo.complete = true;
+  }
+  //save it
+  const todoCompleteStatus = await todo.save({ validateBeforeSave: false });
+  //return response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        todoCompleteStatus,
+        "todo complete status changed successfully"
+      )
+    );
+});
+
+export { createTodo, deleteTodo, getTodos, toggleCompleteStatus, updateTodo };
