@@ -100,7 +100,7 @@ class _UpdateTodoState extends State<UpdateTodo> {
                   );
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("Todo Updated Successfully")));
-                  Navigator.pushNamed(context, "/dashboard");
+                  Navigator.pop(context);
                   /*  await createTodo(
                   title: titleCtrl.text,
                   description: descriptionCtrl.text,
@@ -111,7 +111,7 @@ class _UpdateTodoState extends State<UpdateTodo> {
                 },
                 child: isLoading
                     ? const CircularProgressIndicator()
-                    : const Text("Create"),
+                    : const Text("Update"),
               ),
             ],
           ),

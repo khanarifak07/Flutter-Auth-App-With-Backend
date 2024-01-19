@@ -1,9 +1,7 @@
-import 'package:dio/dio.dart';
-
 const wifiUrl = "http://192.168.0.107:4000/api/v1";
 const mobileUrl = "https://192.168.142.11:4000/api/v1";
 const url = wifiUrl;
-Dio dio = Dio(BaseOptions(baseUrl: mobileUrl));
+// Dio dio = Dio(BaseOptions(baseUrl: mobileUrl));
 // const url = "https://flutter-auth-app-backend.onrender.com/api/v1";
 const register = "$url/users/register";
 const login = "$url/users/login";
@@ -15,5 +13,8 @@ const changeCurrentPassword = "$url/users/change-current-password";
 const createTodoApi = "$url/todos/create-todo";
 String updateTodoApi(String id) => "$url/todos/update-todo/$id";
 String deleteTodoApi(String id) => "$url/todos/delete-todo/$id";
+
+String changeCompleteStatusApi(String id) =>
+    "$url/todos/change-complete-status/$id";
 
 const getTodoApi = "$url/todos/get-todos";

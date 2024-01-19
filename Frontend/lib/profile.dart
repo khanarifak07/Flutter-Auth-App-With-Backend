@@ -302,7 +302,7 @@ class _ProfileState extends State<Profile> {
                     child: isLoading
                         ? const CircularProgressIndicator()
                         : const Text("Update"),
-                  )
+                  ),
                 ],
               ),
             )

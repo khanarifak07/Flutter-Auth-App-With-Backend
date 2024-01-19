@@ -133,7 +133,7 @@ class _CreateTodoState extends State<CreateTodo> {
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Todo Created Successfully")));
-                Navigator.pushNamed(context, "/dashboard");
+                Navigator.pop(context);
               },
               child: isLoading
                   ? const CircularProgressIndicator()

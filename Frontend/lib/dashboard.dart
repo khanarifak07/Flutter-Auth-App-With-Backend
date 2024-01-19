@@ -15,6 +15,13 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  bool isComplete = false;
+  void changeStatus() {
+    setState(() {
+      isComplete = !isComplete;
+    });
+  }
+
   Future<List<TodoModel>?> getTodos() async {
     try {
       //get the accessToken
@@ -73,6 +80,33 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  Future<void> changeCompleteStatus({
+    required id,
+  }) async {
+    try {
+      //get the access token
+      var prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString("accessToken");
+      //create dio instace
+      Dio dio = Dio();
+      //create formdata instace if you want to pass data with image else normal obj
+
+      //make dio pathc request
+      Response response = await dio.patch(changeCompleteStatusApi(id),
+          options: Options(
+            headers: {"Authorization": "Bearer $token"},
+          ));
+      //handle response
+      if (response.statusCode == 200) {
+        print("✅Status changed successfully ${response.data}");
+      } else {
+        print("❌Failed to Change Status : HTTPCODE :${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error while changing complete status");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,18 +154,47 @@ class _DashboardState extends State<Dashboard> {
                                           builder: (context) =>
                                               UpdateTodo(todoModel: e)));
                                 },
-                                title: Text(e.title),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(e.title),
+                                    TextButton(
+                                        onPressed: () async {
+                                          await changeCompleteStatus(id: e.id);
+                                          setState(() {});
+                                        },
+                                        child: isComplete
+                                            ? const CircularProgressIndicator()
+                                            : Container(
+                                                height: 30,
+                                                width: 140,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                child: const Center(
+                                                  child:
+                                                      Text("Mark As Complete"),
+                                                )))
+                                  ],
+                                ),
                                 subtitle: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(e.description ?? ""),
-                                    IconButton(
+                                    TextButton(
                                         onPressed: () async {
-                                          deleteTodo(id: e.id);
-                                          setState(() {});
+                                          setState(() {
+                                            deleteTodo(id: e.id);
+                                          });
                                         },
-                                        icon: const Icon(Icons.delete))
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(right: 45),
+                                          child: Text("Delete ❌"),
+                                        ))
                                   ],
                                 ),
                               ),
