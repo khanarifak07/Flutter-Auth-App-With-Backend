@@ -16,8 +16,11 @@ class _CreateTodoState extends State<CreateTodo> {
   bool isLoading = false;
   String selectedPriority = "";
 
-  Future<void> createTodo(
-      {required String title, String? description, String? priority}) async {
+  Future<void> createTodo({
+    required String title,
+    String? description,
+    String? priority,
+  }) async {
     try {
       setState(() {
         isLoading = true;
