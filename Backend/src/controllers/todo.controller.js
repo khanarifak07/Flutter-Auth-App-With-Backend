@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createTodo = asyncHandler(async (req, res) => {
-  const { title, description, complete } = req.body;
+  const { title, description, priority } = req.body;
 
   if (!title) {
     throw new ApiError(400, "Title is required");
@@ -18,6 +18,7 @@ const createTodo = asyncHandler(async (req, res) => {
     description,
     complete: false,
     createdBy: user,
+    priority,
   });
 
   if (!todo) {
@@ -51,6 +52,7 @@ const updateTodo = asyncHandler(async (req, res) => {
     // Update the TODO based on your requirements
     todo.title = req.body.title; // Example: Update title from request body
     todo.description = req.body.description;
+    todo.priority = req.body.priority;
     // Update other fields as needed
 
     await todo.save();

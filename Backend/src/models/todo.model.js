@@ -17,6 +17,9 @@ const todoSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    priority: {
+      type: String,
+    },
   },
   { timestamps: true, versionKey: false }
 );
