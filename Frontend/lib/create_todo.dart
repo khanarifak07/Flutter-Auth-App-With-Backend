@@ -1,21 +1,28 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config.dart';
+import 'package:frontend/models/todo.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateTodo extends StatefulWidget {
-  const CreateTodo({super.key});
+  final TodoModel? todoModel;
+  const CreateTodo({super.key, this.todoModel});
 
   @override
   State<CreateTodo> createState() => _CreateTodoState();
 }
 
 class _CreateTodoState extends State<CreateTodo> {
-  TextEditingController titleCtrl = TextEditingController();
-  TextEditingController descriptionCtrl = TextEditingController();
+  late TextEditingController titleCtrl =
+      TextEditingController(text: widget.todoModel?.title);
+  late TextEditingController descriptionCtrl =
+      TextEditingController(text: widget.todoModel?.description);
   bool isLoading = false;
-  String selectedPriority = "";
+  late String selectedPriority = widget.todoModel?.priority ?? "";
 
+  //create todo method
   Future<void> createTodo({
     required String title,
     String? description,
@@ -50,6 +57,49 @@ class _CreateTodoState extends State<CreateTodo> {
       }
     } catch (e) {
       print("Error while creating todo: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  //update todo method
+  Future<void> updateTodo({
+    required title,
+    String? description,
+    required id,
+    String? priority,
+  }) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      // get the access token
+      var pref = await SharedPreferences.getInstance();
+      var token = pref.getString('accessToken');
+
+      //create dio instance
+      Dio dio = Dio();
+      //reaquest normal object data as we are not passign images so no need to create form data
+      var updateTodo = {
+        'title': title,
+        'description': description,
+        'priority': priority,
+      };
+      //make dio patch request
+      Response response = await dio.patch(updateTodoApi(id),
+          data: updateTodo,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      //handle the response
+      if (response.statusCode == 200) {
+        log("Todo Updated Successfully ${response.data}");
+      } else {
+        print("Error while updating todo ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error while updating todo $e");
     } finally {
       setState(() {
         isLoading = false;
@@ -98,18 +148,29 @@ class _CreateTodoState extends State<CreateTodo> {
               height: 50,
               color: Colors.red.shade200,
               onPressed: () async {
-                await createTodo(
-                  title: titleCtrl.text,
-                  description: descriptionCtrl.text,
-                  priority: selectedPriority,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Todo Created Successfully")));
-                Navigator.pop(context);
+                widget.todoModel == null
+                    ? await createTodo(
+                        title: titleCtrl.text,
+                        description: descriptionCtrl.text,
+                        priority: selectedPriority,
+                      )
+                    : await updateTodo(
+                        id: widget.todoModel!.id,
+                        title: titleCtrl.text,
+                        description: descriptionCtrl.text,
+                        priority: selectedPriority,
+                      );
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Todo Created Successfully")));
+                  Navigator.pop(context);
+                }
               },
               child: isLoading
                   ? const CircularProgressIndicator()
-                  : const Text("Create"),
+                  : widget.todoModel != null
+                      ? const Text("Update")
+                      : const Text("Create"),
             ),
           ],
         ),

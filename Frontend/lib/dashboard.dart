@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config.dart';
+import 'package:frontend/create_todo.dart';
 import 'package:frontend/models/todo.model.dart';
-import 'package:frontend/update_todo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
@@ -169,8 +169,9 @@ class _DashboardState extends State<Dashboard> {
                                   await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              UpdateTodo(todoModel: e)));
+                                          builder: (context) => CreateTodo(
+                                                todoModel: e,
+                                              )));
 
                                   setState(() {});
                                 },
@@ -262,7 +263,8 @@ class _DashboardState extends State<Dashboard> {
           }),
       floatingActionButton: GestureDetector(
         onTap: () async {
-          await Navigator.pushNamed(context, "/create-todo");
+          await Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const CreateTodo()));
           setState(() {});
         },
         child: const CircleAvatar(
