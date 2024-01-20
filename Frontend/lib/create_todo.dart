@@ -14,11 +14,10 @@ class _CreateTodoState extends State<CreateTodo> {
   TextEditingController titleCtrl = TextEditingController();
   TextEditingController descriptionCtrl = TextEditingController();
   bool isLoading = false;
+  String selectedPriority = "";
 
-  Future<void> createTodo({
-    required String title,
-    String? description,
-  }) async {
+  Future<void> createTodo(
+      {required String title, String? description, String? priority}) async {
     try {
       setState(() {
         isLoading = true;
@@ -31,6 +30,7 @@ class _CreateTodoState extends State<CreateTodo> {
       var todoData = {
         "title": title,
         "description": description ?? "",
+        "priority": priority ?? ""
       };
 
       Response response = await dio.post(
@@ -47,47 +47,6 @@ class _CreateTodoState extends State<CreateTodo> {
       }
     } catch (e) {
       print("Error while creating todo: $e");
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<void> updateTodo({
-    required String title,
-    String? description,
-    required String id,
-  }) async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      var prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString('accessToken');
-
-      Dio dio = Dio();
-
-      var todoData = {
-        "title": title,
-        "description": description ?? "",
-      };
-
-      Response response = await dio.patch(
-        updateTodoApi(id),
-        data: todoData,
-        options: Options(
-          headers: {"Authorization": "Bearer $token"},
-        ),
-      );
-      if (response.statusCode == 200) {
-        print("Todo updated successfully ${response.data}");
-      } else {
-        print("Todo updation failed with status code ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error while updating todo: $e");
     } finally {
       setState(() {
         isLoading = false;
@@ -121,6 +80,15 @@ class _CreateTodoState extends State<CreateTodo> {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                priorityContainer("High"),
+                priorityContainer("Medium"),
+                priorityContainer("Low"),
+              ],
+            ),
             const SizedBox(height: 30),
             MaterialButton(
               minWidth: double.maxFinite,
@@ -130,6 +98,7 @@ class _CreateTodoState extends State<CreateTodo> {
                 await createTodo(
                   title: titleCtrl.text,
                   description: descriptionCtrl.text,
+                  priority: selectedPriority,
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Todo Created Successfully")));
@@ -143,5 +112,48 @@ class _CreateTodoState extends State<CreateTodo> {
         ),
       ),
     );
+  }
+
+  Widget priorityContainer(String priority) {
+    Color colorContainer = getPriorityColor(priority);
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedPriority = priority;
+        });
+      },
+      child: Container(
+        height: 50,
+        width: 120,
+        decoration: BoxDecoration(
+            color: colorContainer,
+            border: Border.all(
+                color: selectedPriority == priority
+                    ? Colors.black
+                    : Colors.transparent,
+                width: 2)),
+        child: Center(
+            child: Text(
+          priority,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        )),
+      ),
+    );
+  }
+
+  Color getPriorityColor(String priority) {
+    switch (priority) {
+      case "High":
+        return Colors.red;
+      case "Medium":
+        return Colors.blue;
+      case "Low":
+        return Colors.green;
+      default:
+        return Colors.transparent;
+    }
   }
 }

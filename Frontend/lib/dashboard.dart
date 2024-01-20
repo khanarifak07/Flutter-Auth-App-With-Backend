@@ -158,13 +158,21 @@ class _DashboardState extends State<Dashboard> {
                               child: ListTile(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
-                                tileColor: Colors.red.shade50,
-                                onTap: () {
-                                  Navigator.push(
+                                tileColor: e.priority == "High"
+                                    ? Colors.red.shade50
+                                    : e.priority == "Medium"
+                                        ? Colors.blue.shade50
+                                        : e.priority == "Low"
+                                            ? Colors.green.shade50
+                                            : Colors.transparent,
+                                onTap: () async {
+                                  await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               UpdateTodo(todoModel: e)));
+
+                                  setState(() {});
                                 },
                                 title: Row(
                                   mainAxisAlignment:
@@ -194,12 +202,33 @@ class _DashboardState extends State<Dashboard> {
                                               height: 30,
                                               width: 140,
                                               decoration: BoxDecoration(
-                                                  color: Colors.red.shade100,
+                                                  color: e.priority == "High"
+                                                      ? Colors.red.shade100
+                                                      : e.priority == "Medium"
+                                                          ? Colors.blue.shade100
+                                                          : e.priority == "Low"
+                                                              ? Colors.green
+                                                                  .shade100
+                                                              : Colors
+                                                                  .transparent,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           16)),
-                                              child: const Center(
-                                                child: Text("Mark As Complete"),
+                                              child: Center(
+                                                child: Text(
+                                                  "Mark As Complete",
+                                                  style: TextStyle(
+                                                    color: e.priority == "High"
+                                                        ? Colors.red
+                                                        : e.priority == "Medium"
+                                                            ? Colors.blue
+                                                            : e.priority ==
+                                                                    "Low"
+                                                                ? Colors.green
+                                                                : Colors
+                                                                    .transparent,
+                                                  ),
+                                                ),
                                               )),
                                     )
                                   ],

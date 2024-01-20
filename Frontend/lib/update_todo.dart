@@ -98,16 +98,11 @@ class _UpdateTodoState extends State<UpdateTodo> {
                     title: titleCtrl.text,
                     description: descriptionCtrl.text,
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Todo Updated Successfully")));
-                  Navigator.pop(context);
-                  /*  await createTodo(
-                  title: titleCtrl.text,
-                  description: descriptionCtrl.text,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Todo Created Successfully")));
-                Navigator.pushNamed(context, "/dashboard"); */
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Todo Updated Successfully")));
+                    Navigator.pop(context);
+                  }
                 },
                 child: isLoading
                     ? const CircularProgressIndicator()
