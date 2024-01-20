@@ -15,12 +15,9 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  // bool initialLoading = false;
+  bool isDelete = false;
   bool isComplete = false;
-  void changeStatus() {
-    setState(() {
-      isComplete = !isComplete;
-    });
-  }
 
   Future<List<TodoModel>?> getTodos() async {
     try {
@@ -59,6 +56,9 @@ class _DashboardState extends State<Dashboard> {
     required id,
   }) async {
     try {
+      setState(() {
+        isDelete = true;
+      });
       //get the access token
       var pref = await SharedPreferences.getInstance();
       var token = pref.getString('accessToken');
@@ -77,12 +77,19 @@ class _DashboardState extends State<Dashboard> {
       }
     } catch (e) {
       print("Error while deleting todo $e");
+    } finally {
+      setState(() {
+        isDelete = false;
+      });
     }
   }
 
   Future<void> changeCompleteStatus({
     required id,
   }) async {
+    setState(() {
+      isComplete = true;
+    });
     try {
       //get the access token
       var prefs = await SharedPreferences.getInstance();
@@ -104,6 +111,10 @@ class _DashboardState extends State<Dashboard> {
       }
     } catch (e) {
       print("Error while changing complete status");
+    } finally {
+      setState(() {
+        isComplete = false;
+      });
     }
   }
 
@@ -129,9 +140,10 @@ class _DashboardState extends State<Dashboard> {
           future: getTodos(),
           builder: (context, snapshot) {
             print("Snapshot Data: ${snapshot.data}");
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            /*  if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
+            } else */
+            if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.hasData && snapshot.data != null) {
               if (snapshot.data!.isEmpty) {
@@ -160,24 +172,36 @@ class _DashboardState extends State<Dashboard> {
                                   children: [
                                     Text(e.title),
                                     TextButton(
-                                        onPressed: () async {
-                                          await changeCompleteStatus(id: e.id);
-                                          setState(() {});
-                                        },
-                                        child: isComplete
-                                            ? const CircularProgressIndicator()
-                                            : Container(
-                                                height: 30,
-                                                width: 140,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.red.shade100,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            16)),
-                                                child: const Center(
-                                                  child:
-                                                      Text("Mark As Complete"),
-                                                )))
+                                      onPressed: () async {
+                                        await changeCompleteStatus(id: e.id);
+                                        setState(() {
+                                          e.complete;
+                                        });
+                                      },
+                                      child: e.complete!
+                                          ? Container(
+                                              height: 30,
+                                              width: 140,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red.shade100,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16)),
+                                              child: const Center(
+                                                child: Text("Completed"),
+                                              )) // Show "Completed" text when item is marked as complete
+                                          : Container(
+                                              height: 30,
+                                              width: 140,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red.shade100,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16)),
+                                              child: const Center(
+                                                child: Text("Mark As Complete"),
+                                              )),
+                                    )
                                   ],
                                 ),
                                 subtitle: Row(
@@ -208,8 +232,9 @@ class _DashboardState extends State<Dashboard> {
             }
           }),
       floatingActionButton: GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, "/create-todo");
+        onTap: () async {
+          await Navigator.pushNamed(context, "/create-todo");
+          setState(() {});
         },
         child: const CircleAvatar(
           radius: 35,
