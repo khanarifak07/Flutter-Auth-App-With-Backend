@@ -180,57 +180,93 @@ class _DashboardState extends State<Dashboard> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(e.title),
-                                    TextButton(
-                                      onPressed: () async {
-                                        await changeCompleteStatus(id: e.id);
-                                        setState(() {
-                                          e.complete;
-                                        });
-                                      },
-                                      child: e.complete!
-                                          ? Container(
-                                              height: 30,
-                                              width: 140,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red.shade100,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16)),
-                                              child: const Center(
-                                                child: Text("Completed"),
-                                              )) // Show "Completed" text when item is marked as complete
-                                          : Container(
-                                              height: 30,
-                                              width: 140,
-                                              decoration: BoxDecoration(
-                                                  color: e.priority == "High"
-                                                      ? Colors.red.shade100
-                                                      : e.priority == "Medium"
-                                                          ? Colors.blue.shade100
-                                                          : e.priority == "Low"
-                                                              ? Colors.green
-                                                                  .shade100
-                                                              : Colors
-                                                                  .transparent,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16)),
-                                              child: Center(
-                                                child: Text(
-                                                  "Mark As Complete",
-                                                  style: TextStyle(
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      child: TextButton(
+                                        key: ValueKey(e.complete),
+                                        onPressed: () async {
+                                          await changeCompleteStatus(id: e.id);
+                                          setState(() {
+                                            e.complete;
+                                          });
+                                        },
+                                        child: e.complete!
+                                            ? Container(
+                                                key: UniqueKey(),
+                                                height: 30,
+                                                width: 140,
+                                                decoration: BoxDecoration(
                                                     color: e.priority == "High"
-                                                        ? Colors.red
+                                                        ? Colors.red.shade100
                                                         : e.priority == "Medium"
-                                                            ? Colors.blue
+                                                            ? Colors
+                                                                .blue.shade100
                                                             : e.priority ==
                                                                     "Low"
                                                                 ? Colors.green
+                                                                    .shade100
                                                                 : Colors
                                                                     .transparent,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Completed",
+                                                    style: TextStyle(
+                                                      color: e.priority ==
+                                                              "High"
+                                                          ? Colors.red
+                                                          : e.priority ==
+                                                                  "Medium"
+                                                              ? Colors.blue
+                                                              : e.priority ==
+                                                                      "Low"
+                                                                  ? Colors.green
+                                                                  : Colors
+                                                                      .transparent,
+                                                    ),
                                                   ),
-                                                ),
-                                              )),
+                                                )) // Show "Completed" text when item is marked as complete
+                                            : Container(
+                                                key: UniqueKey(),
+                                                height: 30,
+                                                width: 140,
+                                                decoration: BoxDecoration(
+                                                    color: e.priority == "High"
+                                                        ? Colors.red.shade100
+                                                        : e.priority == "Medium"
+                                                            ? Colors
+                                                                .blue.shade100
+                                                            : e.priority ==
+                                                                    "Low"
+                                                                ? Colors.green
+                                                                    .shade100
+                                                                : Colors
+                                                                    .transparent,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Mark As Complete",
+                                                    style: TextStyle(
+                                                      color: e.priority ==
+                                                              "High"
+                                                          ? Colors.red
+                                                          : e.priority ==
+                                                                  "Medium"
+                                                              ? Colors.blue
+                                                              : e.priority ==
+                                                                      "Low"
+                                                                  ? Colors.green
+                                                                  : Colors
+                                                                      .transparent,
+                                                    ),
+                                                  ),
+                                                )),
+                                      ),
                                     )
                                   ],
                                 ),
